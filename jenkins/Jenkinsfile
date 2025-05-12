@@ -7,6 +7,9 @@ pipeline {
         // Make sure Maven is configured in Jenkins with the correct name, like 'Maven 3.6.3'
         maven 'Maven 3.6.3'
     }
+    environment{
+        NAME = 'nitish'
+    }
 
     stages {
         stage('install') {
@@ -17,9 +20,15 @@ pipeline {
   success {
    archiveArtifacts artifacts :'**/target/*.jar'
 }
+            }
+        }
+        stage('print name'){
+            steps{
+                echo 'my name is $NAME'
+            }
         }
 
         
     }
 }
-}
+
