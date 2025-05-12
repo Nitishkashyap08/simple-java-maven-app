@@ -1,37 +1,46 @@
 pipeline {
     agent {
-  label 'dev-server'
-}
-parameters {
-  string defaultValue: 'sachin', name: 'FNAME'
-}
+        label 'dev-server'
+    }
+
+    parameters {
+        string(defaultValue: 'sachin', name: 'FNAME')
+    }
 
     tools {
-        // Make sure Maven is configured in Jenkins with the correct name, like 'Maven 3.6.3'
         maven 'Maven 3.6.3'
     }
-    environment{
+
+    environment {
         NAME = "nitish"
     }
 
     stages {
         stage('install') {
             steps {
-                sh 'mvn clean package'
-            }
-            post {
-  success {
-   archiveArtifacts artifacts :'**/target/*.jar'
-}
+                sh 'mvn -version'
             }
         }
-        stage('print name'){
-            steps{
+
+        stage('test') {
+            parallel {
+                stage('test A') {
+                    steps {
+                        echo 'this is test A'
+                    }
+                }
+                stage('test B') {
+                    steps {
+                        echo 'this is test B'
+                    }
+                }
+            }
+        }
+
+        stage('print name') {
+            steps {
                 echo "my name is $NAME ${params.FNAME}"
             }
         }
-
-        
     }
 }
-
