@@ -1,46 +1,42 @@
-pipeline {
-    agent {
+pipeline{
+    agent{
         label 'dev-server'
     }
-
+    tools{
+        maven 'Maven 3.8.8'
+    }
+    environment{
+        NAME = "NITISH"
+    }
     parameters {
-        string(defaultValue: 'sachin', name: 'FNAME')
+  choice choices: ['VIRAT', 'KOHLI', 'SHARMA'], name: 'FNAME'
+}
+ stages {
+    stage('install package'){
+    steps{
+        sh 'mvn clean package'
     }
-
-    tools {
-        maven 'Maven 3.6.3'
     }
-
-    environment {
-        NAME = "nitish"
-    }
-
-    stages {
-        stage('install') {
-            steps {
-                sh 'mvn -version'
-            }
+   stage('parallel test'){
+    parallel{
+        stage('test a'){
+            steps{
+            echo 'this is test a stage'
         }
-
-        stage('test') {
-            parallel {
-                stage('test A') {
-                    steps {
-                        echo 'this is test A'
-                    }
-                }
-                stage('test B') {
-                    steps {
-                        echo 'this is test B'
-                    }
-                }
-            }
-        }
-
-        stage('print name') {
-            steps {
-                echo "my name is $NAME ${params.FNAME}"
+    }
+    
+        stage('test b'){
+            steps{
+            echo 'this is test b stage'
             }
         }
     }
+   }
+    stage('deploy'){
+        steps{
+        echo "you build succesfully by $NAME ${params.FNAME}"
+        }
+    }
+ }
+
 }
