@@ -1,40 +1,21 @@
-pipeline{
-    agent{
-        label 'dev-server'
+pipeline {
+    agent any
+
+    tools {
+        maven 'mymaven'
     }
-    
-    environment{
-        NAME = "NITISH"
-    }
-    parameters {
-  choice choices: ['VIRAT', 'KOHLI', 'SHARMA'], name: 'FNAME'
-}
- stages {
-    stage('deploy'){
-        steps{
-        echo "you build succesfully by $NAME ${params.FNAME}"
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/Nitishkashyap08/simple-java-maven-app.git'
+            }
         }
-    }
-   stage('parallel test'){
-    parallel{
-        stage('test a'){
-            steps{
-            echo 'this is test a stage'
-        }
-    }
-    
-        stage('test b'){
-            steps{
-            echo 'this is test b stage'
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
             }
         }
     }
-   }
-    stage('show'){
-        steps{
-        echo "you build succesfully by $NAME ${params.FNAME}"
-        }
-    }
- }
-
 }
