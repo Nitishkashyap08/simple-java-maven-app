@@ -1,20 +1,45 @@
 pipeline {
-    agent any
+    agent {
+        label 'dev-server'
+    }
+
+    parameters {
+        string(defaultValue: 'sachin', name: 'FNAME')
+    }
 
     tools {
         maven 'mymaven'
     }
 
+    environment {
+        NAME = "nitish"
+    }
+
     stages {
-        stage('Checkout') {
+        stage('install') {
             steps {
-                git 'https://github.com/Nitishkashyap08/simple-java-maven-app.git'
+                sh 'mvn -version'
             }
         }
 
-        stage('Build') {
+        stage('test') {
+            parallel {
+                stage('test A') {
+                    steps {
+                        echo 'this is test A'
+                    }
+                }
+                stage('test B') {
+                    steps {
+                        echo 'this is test B'
+                    }
+                }
+            }
+        }
+
+        stage('print name') {
             steps {
-                sh 'mvn clean install'
+                echo "my name is $NAME ${params.FNAME}"
             }
         }
     }
