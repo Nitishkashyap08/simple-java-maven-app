@@ -1,45 +1,27 @@
 pipeline {
-    agent {
-        label 'dev-server'
-    }
-
-    parameters {
-        string(defaultValue: 'sachin', name: 'FNAME')
-    }
-
+    agent any
     tools {
-        maven 'mymaven'
+        maven 'mymaven' // Jenkins tool name for Maven
     }
-
-    environment {
-        NAME = "nitish"
-    }
-
     stages {
-        stage('install') {
+        stage('Checkout') {
             steps {
-                sh 'mvn -version'
+                git 'https://github.com/Nitishkashyap08/simple-java-maven-app.git'
             }
         }
-
-        stage('test') {
-            parallel {
-                stage('test A') {
-                    steps {
-                        echo 'this is test A'
-                    }
-                }
-                stage('test B') {
-                    steps {
-                        echo 'this is test B'
-                    }
-                }
+        stage('Build') {
+            steps {
+                sh 'mvn clean compile'
             }
         }
-
-        stage('print name') {
+        stage('Unit Test') {
             steps {
-                echo "my name is $NAME ${params.FNAME}"
+                sh 'mvn test'
+            }
+        }
+        stage('Package') {
+            steps {
+                sh 'mvn package -DskipTests'
             }
         }
     }
