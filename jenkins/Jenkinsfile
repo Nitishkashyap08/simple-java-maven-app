@@ -3,7 +3,7 @@ pipeline{
         label 'dev-server'
     }
     tools{
-        maven '3.8.8'
+        maven 'Maven 3.8.8'
     }
     environment{
         NAME = "NITISH"
