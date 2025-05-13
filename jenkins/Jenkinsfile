@@ -30,7 +30,7 @@ pipeline{
         }
     }
    }
-    stage('deploy'){
+    stage('show'){
         steps{
         echo "you build succesfully by $NAME ${params.FNAME}"
         }
