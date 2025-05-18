@@ -1,27 +1,22 @@
-pipeline {
-    agent any
-    tools {
-        maven 'mymaven' // Jenkins tool name for Maven
+pipeline{
+    agent {label 'agent-server'}
+    tools{
+        maven 'mymaven'
     }
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/Nitishkashyap08/simple-java-maven-app.git'
+    stages{
+        stage('clean'){
+            steps{
+                sh 'mvn clean install'
             }
         }
-        stage('Build') {
-            steps {
-                sh 'mvn clean compile'
-            }
-        }
-        stage('Unit Test') {
-            steps {
+        stage('test'){
+            steps{
                 sh 'mvn test'
             }
         }
-        stage('Package') {
-            steps {
-                sh 'mvn package -DskipTests'
+        stage('deploy'){
+            steps{
+                sh './deploy.sh'
             }
         }
     }
