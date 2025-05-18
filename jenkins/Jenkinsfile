@@ -1,27 +1,30 @@
-pipeline{
-    agent {label 'agent-server'}
-    tools{
+pipeline {
+    agent { label 'agent-server' }
+
+    tools {
         maven 'mymaven'
     }
-    stages{
-        stage('clean'){
-            steps{
+
+    stages {
+        stage('clean') {
+            steps {
                 sh 'mvn clean install'
             }
         }
-        stage('test'){
-            steps{
+
+        stage('test') {
+            steps {
                 sh 'mvn test'
             }
         }
-        stage('deploy'){
-            steps{
-                dir('jenkins/scripts'){
-                    sh 'chmod +x deploy.sh'
-                   sh './deploy.sh'
-        }
-            }
 
+        stage('deploy') {
+            steps {
+                dir('jenkins/scripts') {
+                    sh 'chmod +x deploy.sh'
+                    sh './deploy.sh'
+                }
+            }
+        }
     }
-}
 }
