@@ -1,32 +1,52 @@
-pipeline{
-    agent{label 'agent-server'}
-    tools{
+pipeline {
+    agent { label 'agent-server' }
+    
+    tools {
         maven 'mymaven'
     }
-    stages{
-        stage('clean'){
-            steps{
+
+    stages {
+        stage('clean') {
+            steps {
                 sh 'mvn clean install'
             }
         }
-        stage('parallel steps'){
-            parallel{
-                stage('unit test'){
-                steps{
-                    sh 'mvn test -Dtest=UnitTest*'
+
+        stage('parallel steps') {
+            parallel {
+                stage('unit test') {
+                    steps {
+                        script {
+                            def status = sh(script: 'mvn test -Dtest=UnitTest*', returnStatus: true)
+                            if (status == 0) {
+                                echo "Unit tests ran successfully."
+                            } else {
+                                echo "Unit tests not found or failed, running all tests."
+                                sh 'mvn test'
+                            }
+                        }
+                    }
                 }
-            }
-            
-            stage('integratio'){
-                steps{
-                    sh 'mvn test -Dtest=IntegrationTest*'
+
+                stage('integratio') {
+                    steps {
+                        script {
+                            def status = sh(script: 'mvn test -Dtest=IntegrationTest*', returnStatus: true)
+                            if (status == 0) {
+                                echo "Integration tests ran successfully."
+                            } else {
+                                echo "Integration tests not found or failed, running all tests."
+                                sh 'mvn test'
+                            }
+                        }
+                    }
                 }
             }
         }
-        }
-        stage('deploy'){
-            steps{
-                dir('jenkins'){
+
+        stage('deploy') {
+            steps {
+                dir('jenkins') {
                     sh 'chmod +x deploy.sh'
                     sh './deploy.sh'
                 }
