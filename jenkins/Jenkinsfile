@@ -1,35 +1,36 @@
-pipeline {
-    agent { label 'agent-server' }
-    environment {
-        DEPLOY_DIR = 'jenkins'
-        MVN_CMD = 'mvn'
-    }
-
-    tools {
+pipeline{
+    agent{label 'agent-server'}
+    tools{
         maven 'mymaven'
     }
-
-    stages {
-        stage('clean') {
-            steps {
-                sh "${env.MVN_CMD} clean install"
+    stages{
+        stage('clean'){
+            steps{
+                sh 'mvn clean install'
             }
         }
-
-        stage('test') {
-            steps {
-                sh "${env.MVN_CMD} test"
-               
+        stage('parllel steps'){
+            parllel{
+                stage('unit test'){
+                steps{
+                    sh 'mvn test -Dtest=UnitTest*'
+                }
+            }
+            
+            stage('integratio'){
+                steps{
+                    sh 'mvn test -Dtest=IntegrationTest*'
+                }
             }
         }
-
+        }
         stage('deploy'){
-    steps {
-        dir("${env.DEPLOY_DIR}") {
-            sh 'chmod +x deploy.sh'
-            sh './deploy.sh'
+            steps{
+                dir('jenkins'){
+                    sh 'chmod +x deploy.sh'
+                    sh './deploy.sh'
+                }
+            }
         }
-    }
-}
     }
 }
