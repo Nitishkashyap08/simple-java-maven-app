@@ -1,5 +1,9 @@
 pipeline {
     agent { label 'agent-server' }
+    environment {
+        DEPLOY_DIR = 'jenkins'
+        MVN_CMD = 'mvn'
+    }
 
     tools {
         maven 'mymaven'
@@ -8,19 +12,20 @@ pipeline {
     stages {
         stage('clean') {
             steps {
-                sh 'mvn clean install'
+                sh "${env.MVN_CMD} clean install"
             }
         }
 
         stage('test') {
             steps {
-                sh 'mvn test'
+                sh "${env.MVN_CMD} test"
+               
             }
         }
 
         stage('deploy'){
     steps {
-        dir('jenkins') {
+        dir("${env.DEPLOY_DIR}") {
             sh 'chmod +x deploy.sh'
             sh './deploy.sh'
         }
