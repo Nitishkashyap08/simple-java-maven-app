@@ -16,7 +16,12 @@ pipeline{
         }
         stage('deploy'){
             steps{
+                if(FileExists('deploy.sh')){
                 sh './deploy.sh'
+                }
+                else{
+                    echo "there is no file"
+                }
             }
         }
     }
