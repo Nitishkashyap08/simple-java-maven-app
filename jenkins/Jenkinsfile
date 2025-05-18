@@ -17,7 +17,7 @@ pipeline{
         stage('deploy'){
             steps{
                 script{
-                if(FileExists('deploy.sh')){
+                if(fileExists('deploy.sh')){
                 sh './deploy.sh'
                 }
                 else{
